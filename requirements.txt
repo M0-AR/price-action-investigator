@@ -1,0 +1,9 @@
+# Price-Action Investigator — dependencies (pinned for reproducibility, 2026)
+numpy==1.26.4
+pandas==2.2.3
+matplotlib==3.8.4
+requests==2.32.3
+yfinance==0.2.43
+pyarrow==17.0.0
+scipy==1.13.1
+pytest==8.3.4

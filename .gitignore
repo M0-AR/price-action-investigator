@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+data/*.parquet
+!data/.gitkeep
+# results/results.json is the frozen verified evidence (20K) — always tracked.
+# (Only extra *.json files in results/ are ignored.)
+results/*.json
+!results/.gitkeep
+!results/results.json

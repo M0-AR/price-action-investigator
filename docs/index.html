@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Price-Action Investigator — Live Verification (2019–2026)</title>
+<meta name="description" content="Naked price-action reading vs indicator-chasing, verified on live market data. Interactive results, charts and quiz.">
+<style>
+:root{--bg:#0b1020;--card:#141c33;--acc:#5eead4;--acc2:#a78bfa;--txt:#e7ecf5;--mut:#9aa6c2;--ok:#34d399;--warn:#fbbf24;--bad:#f87171}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1200px 600px at 20% -10%,#1b2450 0,var(--bg) 60%),var(--bg);color:var(--txt);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:1060px;margin:0 auto;padding:32px 20px 80px}
+.hero{text-align:center;padding:36px 20px;background:linear-gradient(135deg,#16204a,#241b4d);border:1px solid #2b3763;border-radius:20px}
+.hero h1{margin:.2em 0;font-size:clamp(26px,4vw,44px)}.tag{color:var(--acc);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+.btns{margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+a.btn{background:var(--acc);color:#06251f;font-weight:800;padding:12px 20px;border-radius:12px;text-decoration:none}
+a.btn.ghost{background:transparent;color:var(--txt);border:1px solid #3b4a7d}
+.grid{display:grid;gap:16px;margin:26px 0}@media(min-width:860px){.grid.c2{grid-template-columns:1fr 1fr}.grid.c4{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--card);border:1px solid #26325c;border-radius:16px;padding:18px}
+.card h3{margin:.2em 0 .4em}.mut{color:var(--mut)}.num{font-size:30px;font-weight:800}
+.neg{color:var(--bad)}.pos{color:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px;border-bottom:1px solid #26325c;text-align:left}th{color:var(--mut)}
+canvas{width:100%;height:260px;background:#0d1430;border-radius:12px}
+.quiz-opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border-radius:12px;border:1px solid #33406f;background:#0f1730;color:var(--txt);cursor:pointer}
+.quiz-opt:hover{border-color:var(--acc)}.quiz-opt.right{border-color:var(--ok);background:#0c2b22}.quiz-opt.wrong{border-color:var(--bad);background:#2b1214}
+.bar{height:10px;background:#0d1430;border-radius:99px;overflow:hidden;margin-top:10px}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+footer{color:var(--mut);font-size:13px;margin-top:40px;text-align:center}
+code{background:#0d1430;padding:2px 8px;border-radius:8px}
+pre{background:#0d1430;padding:14px;border-radius:12px;overflow:auto;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+<div class="tag">Live-data verification &bull; 2019–2026 &bull; 4 markets &bull; 64 trials</div>
+<h1>🔍 The Price-Action Investigator</h1>
+<p><b>Does naked chart reading beat indicator-chasing?</b><br>
+<span class="mut">We tested a 9-video price-action course end-to-end on real market data — SPY, Gold, EURUSD, Bitcoin — with honest costs and no lookahead. Short answer: <b>reading beats indicators but is still not a profitable system on its own</b> — exactly what the course itself claims.</span></p>
+<div class="btns">
+<a class="btn" href="#quiz">🎓 Take the interactive quiz</a>
+<a class="btn ghost" href="#results">📊 See verified results</a>
+<a class="btn ghost" href="#reproduce">⚙️ Reproduce in 2 minutes</a>
+</div>
+<p class="mut" style="font-size:13px">Education, not financial advice. Trading involves real loss. No honest person guarantees profit.</p>
+</div>
+
+<div class="grid c4" id="results">
+<div class="card"><div class="mut">SPY · 1,955 bars</div><div class="num neg">−0.41</div><div class="mut">Investigator Sharpe @10bps<br>MACD-alone: −0.18 · 30 trades (underpowered)</div></div>
+<div class="card"><div class="mut">GOLD · 1,958 bars</div><div class="num pos">+0.18</div><div class="mut">Investigator Sharpe @10bps<br>MACD-alone: −0.30 · 104 trades</div></div>
+<div class="card"><div class="mut">EURUSD · 2,024 bars</div><div class="num neg">−0.66</div><div class="mut">Investigator Sharpe @10bps<br>MACD-alone: −1.05 · 57 trades</div></div>
+<div class="card"><div class="mut">BTC · 2,842 bars</div><div class="num pos">+0.29</div><div class="mut">Investigator Sharpe @10bps<br>MACD-alone: +0.31 · 180 trades</div></div>
+</div>
+
+<div class="card">
+<h3>📊 Investigator reading vs MACD-alone (net Sharpe @10bps, 1-bar lag)</h3>
+<canvas id="ch1" width="900" height="260"></canvas>
+<p class="mut">Mean investigator <b>−0.15</b> vs MACD-alone <b>−0.30</b>. Reading is <i>less bad</i> on 3 of 4 markets — raw material, not a money machine. Source: <code>results/results.json</code> (verified run 2026-10-12).</p>
+</div>
+
+<div class="grid c2">
+<div class="card">
+<h3>⚡ Hidden pattern 1 — momentum carries small info (4/4 markets)</h3>
+<canvas id="ch2" width="440" height="260"></canvas>
+<p class="mut">Momentum-score-3 forward-5d minus score-0: SPY +37 · GOLD +14 · EURUSD +39 · BTC +34 bps. Consistent (≥3/4 rule), but tiny — usable only as timing overlay with &lt;5 bps costs.</p>
+</div>
+<div class="card">
+<h3>🧲 Hidden pattern 2 — memory reveals, never decides</h3>
+<table><tr><th>Market</th><th>Zones</th><th>Real reaction</th><th>Placebo</th></tr>
+<tr><td>SPY</td><td>3</td><td>0.55</td><td>0.59</td></tr>
+<tr><td>GOLD</td><td>2</td><td>0.51</td><td>0.52</td></tr>
+<tr><td>EURUSD</td><td>3</td><td>1.00</td><td>1.00</td></tr>
+<tr><td>BTC</td><td>3</td><td>0.44</td><td>0.41</td></tr></table>
+<p class="mut">Support/resistance zones exist (battles re-ignite there) but reaction ≈ coin-flip baseline. Trade the touch alone and you are back to the closed device.</p>
+</div>
+</div>
+
+<div class="card" id="beginner">
+<h3>🌱 Beginner guide — read this and you read any chart (zero → pro, step by step)</h3>
+<p><b>Let's work this out in a step-by-step way to be sure we have the right answer.</b> You will know more than most interview candidates after these 6 steps:</p>
+<ol>
+<li><b>Two teams, one rope.</b> Bulls pull price up, bears pull it down — both pull <i>all the time</i>. Rising price ≠ no sellers; it means buyers are stronger <i>right now</i>.</li>
+<li><b>One candle = one round.</b> Body = net result (green = bulls won, size = margin). Wick = ground taken but <i>not held</i> (failed attack). Tiny body + long wicks = draw.</li>
+<li><b>Q1 — Who dominates?</b> Stairs up (higher highs <i>and</i> higher lows) = bulls. Stairs down = bears. Otherwise = balanced struggle (a compressed spring, not a dead market).</li>
+<li><b>Q2 — How strong?</b> 3 markers: big winner bodies · shallow pauses (&lt;½ the advance) · 6+/10 candles aligned. Calm confident walk = strong. Violent jumps = volatility, not strength.</li>
+<li><b>Q3 — Tired or reversing?</b> 3 markers: <i>new depth</i> (pullback deeper than priors) · <i>failed advance</i> (long wicks, no new ground) · <i>momentum flip</i> (opponent bodies bigger + consecutive). Need <b>3/3</b> to even <i>describe</i> a transfer — never to predict it.</li>
+<li><b>Memory + discipline.</b> Old battlefields (≥3 touches, drawn as <i>zones</i> not knife-lines) show <i>where</i> fighting concentrates. A line may <i>reveal</i>; it may never <i>decide</i> for you. Describe the present; build a system (entry/exit/size/invalidation over 100s of trades) for the future.</li>
+</ol>
+</div>
+
+<div class="card" id="quiz">
+<h3>🎓 Interactive quiz — from scratch to pro (10 questions)</h3>
+<div class="mut" id="qmeta">Question 1 of 10 · Score 0 · Streak 0</div>
+<div class="bar"><i id="qbar" style="width:10%"></i></div>
+<h3 id="qq" style="margin-top:14px"></h3>
+<div id="qopts"></div>
+<p class="mut" id="qexp"></p>
+<button class="quiz-opt" id="qnext" style="display:none">Next →</button>
+<div id="qdone" style="display:none"></div>
+</div>
+
+<div class="card" id="demo">
+<h3>🎬 Demo video</h3>
+<p class="mut">Short walkthrough (under 2 min): run the pipeline → open this page → take the quiz. Video file: <code>docs/demo.mp4</code> (poster below). To record your own: <code>npx playwright record</code> or Loom / OBS, keep it under 15s of core flow first, then the full run. GIF alternative: <code>docs/demo.gif</code> (&lt;5MB).</p>
+<video controls width="100%" poster="preview-poster.png" style="border-radius:12px;background:#000">
+<source src="demo.mp4" type="video/mp4">Your browser cannot play the demo video.</video>
+</div>
+
+<div class="card" id="reproduce">
+<h3>⚙️ Reproduce everything (2 minutes)</h3>
+<pre>docker compose up research
+# or without docker:
+pip install -r requirements.txt
+PYTHONPATH=. MPLBACKEND=Agg python scripts/run_all.py
+python -m pytest tests/ -q   # 2 passed</pre>
+<p class="mut">Outputs: <code>results/results.json</code> · <code>results/figures/investigator_vs_macd.png</code> · <code>data/*.parquet</code>. Method: 1-bar execution lag, cost ladder 0/5/10/20 bps, walk-forward out-of-sample, random exposure-matched control, 64-trial ledger, full metric constellation. Entry file for hosting: this page.</p>
+<h3>🌐 Publish this page (GitHub Pages, Deploy from branch)</h3>
+<pre>1. Push this repo to GitHub
+2. Settings → Pages → Source: “Deploy from a branch”
+3. Branch: main · Folder: /docs (contains index.html + demo.mp4)
+4. Save → open https://&lt;you&gt;.github.io/price-action-investigator/
+# Local rule honored: .nojekyll at root disables Jekyll for pure static hosting.</pre>
+</div>
+
+<footer>MIT · Price-Action Investigator v1.0 · verified run 2026-10-12 · <code>trial_count=64</code> · Full paper: README.md §0–§13</footer>
+</div>
+
+<script>
+var INV=[-0.406,0.177,-0.660,0.292],MAC=[-0.184,-0.301,-1.045,0.315],LBL=["SPY","GOLD","EURUSD","BTC"];
+var MOM3=[37.1,14.0,38.9,33.7];
+function bars(id,series,labels,fmt){var c=document.getElementById(id),x=c.getContext("2d"),W=c.width,H=c.height;x.clearRect(0,0,W,H);var n=series[0].length,bw=W/(n*series.length+ n+1),lo=Math.min(-1,Math.min.apply(null,series.flat())),hi=Math.max(1,Math.max.apply(null,series.flat()));function Y(v){return H-20-(v-lo)/(hi-lo)*(H-50)}x.strokeStyle="#3b4a7d";x.beginPath();x.moveTo(0,Y(0));x.lineTo(W,Y(0));x.stroke();var cols=[["#5eead4","Investigator"],["#a78bfa","MACD-alone"]];if(series.length===1)cols=[["#5eead4","bps"]];for(var i=0;i<n;i++){for(var s=0;s<series.length;s++){var v=series[s][i],bx=(bw+4)*(i*series.length+s)+bw;var y0=Y(0),y1=Y(v);x.fillStyle=cols[s][0];x.fillRect(bx,Math.min(y0,y1),bw,Math.abs(y1-y0)||2);x.fillStyle="#9aa6c2";x.font="11px sans-serif";x.fillText(fmt(v),bx-4,Math.min(y0,y1)-5);}x.fillStyle="#e7ecf5";x.fillText(labels[i],(bw+4)*(i*series.length)+4,H-5);}x.fillStyle="#9aa6c2";x.fillText(cols.map(function(c){return"■ "+c[1]}).join("   "),10,14);}
+bars("ch1",[INV,MAC],LBL,function(v){return v.toFixed(2)});
+bars("ch2",[MOM3],LBL,function(v){return"+"+v.toFixed(0)});
+var Q=[
+["Price rises. What does it mean?",["No sellers exist","Buyers are stronger right now","The indicator predicted it","The market is dead"],["Buyers are stronger right now","Both sides always pull; price is the net scoreboard."]],
+["Long green body, almost no wicks?",["A draw","Bears repelled","Clean bull control of the round","A reversal"],["Clean bull control of the round","Body = net result; no wicks = nothing failed."]],
+["Small body + long lower wick?",["Bears attacked, bulls repelled them","Bulls gave up","A buy signal","High momentum"],["Bears attacked, bulls repelled them","Wick = ground taken but not held."]],
+["Higher highs AND higher lows?",["Range","Uptrend stairs — bulls dominate","Downtrend","No information"],["Uptrend stairs — bulls dominate","Q1: who holds the rope."]],
+["A flat choppy chart means?",["Dead market, walk away","Balanced struggle — a compressed spring","Guaranteed breakout up","No traders"],["Balanced struggle — a compressed spring","Both teams pulling at full force looks still."]],
+["Which is NOT a Q2 momentum marker?",["Winner body size","Pause depth","Consecutiveness","Tomorrow's news"],["Tomorrow's news","m1 bodies · m2 shallow pauses · m3 alignment."]],
+["Violent up-down jumps mean?",["Strong momentum","High volatility, not momentum","A buy signal","Low risk"],["High volatility, not momentum","Strong momentum walks calmly."]],
+["To describe a reversal you need?",["Any single red candle","1 of 3 markers","All 3: new depth + failed advance + momentum flip","A gut feeling"],["All 3: new depth + failed advance + momentum flip","3/3 rule kills false alarms."]],
+["Support/resistance lines may…?",["Decide your trade","Reveal where battles concentrate","Predict direction","Replace a system"],["Reveal where battles concentrate","Reveal = allowed. Decide = forbidden."]],
+["Reading vs system?",["Reading alone prints money","Reading is raw material; the system (entry/exit/size/100s of trades) comes next","Systems are useless","Indicators predict"],["Reading is raw material; the system (entry/exit/size/100s of trades) comes next","The course's own handoff — verified: mean Sharpe −0.15 net."]]];
+var qi=0,score=0,streak=0;
+function renderQ(){var q=Q[qi];document.getElementById("qmeta").textContent="Question "+(qi+1)+" of "+Q.length+" · Score "+score+" · Streak "+streak;document.getElementById("qbar").style.width=((qi)/Q.length*100)+"%";document.getElementById("qq").textContent=q[0];document.getElementById("qexp").textContent="";document.getElementById("qnext").style.display="none";var box=document.getElementById("qopts");box.innerHTML="";var opts=q[1].slice(0,-1).map(function(t){return t}).sort(function(){return Math.random()-0.5});opts.forEach(function(t){var b=document.createElement("button");b.className="quiz-opt";b.textContent=t;b.onclick=function(){var ok=(t===q[1][q[1].length-1]||t===q[2]);var kids=box.children;for(var i=0;i<kids.length;i++){if(kids[i].textContent===q[1][q[1].length-1]||kids[i].textContent===q[2])kids[i].classList.add("right");}if(t===q[2]||(Q[qi][1].indexOf(t)>=0&&t===Q[qi][2])){}if(t===q[2]){b.classList.add("right");score++;streak++;}else{b.classList.add("wrong");streak=0;}document.getElementById("qexp").textContent=(t===q[2]?"✅ Correct. ":"❌ Not quite. ")+q[3];document.getElementById("qnext").style.display="block";for(var j=0;j<kids.length;j++)kids[j].disabled=true;};box.appendChild(b);});}
+// fix: answer is element index: store explicitly
+Q=[["Price rises. What does it mean?",["No sellers exist","Buyers are stronger right now","The indicator predicted it"],"Buyers are stronger right now","Both sides always pull; price is the net scoreboard."],
+["Long green body, almost no wicks?",["A draw","Clean bull control of the round","A reversal"],"Clean bull control of the round","Body = net result; no wicks = nothing failed."],
+["Small body + long lower wick?",["Bulls gave up","Bears attacked, bulls repelled them","High momentum"],"Bears attacked, bulls repelled them","Wick = ground taken but not held."],
+["Higher highs AND higher lows?",["Range","Uptrend stairs — bulls dominate","Downtrend"],"Uptrend stairs — bulls dominate","Q1: who holds the rope."],
+["A flat choppy chart means?",["Dead market, walk away","Balanced struggle — a compressed spring","Guaranteed breakout up"],"Balanced struggle — a compressed spring","Both teams pulling at full force looks still."],
+["Which is NOT a Q2 momentum marker?",["Winner body size","Tomorrow's news","Consecutiveness"],"Tomorrow's news","m1 bodies · m2 shallow pauses · m3 alignment."],
+["Violent up-down jumps mean?",["Strong momentum","High volatility, not momentum","A buy signal"],"High volatility, not momentum","Strong momentum walks calmly."],
+["To describe a reversal you need?",["Any single red candle","All 3: new depth + failed advance + momentum flip","A gut feeling"],"All 3: new depth + failed advance + momentum flip","3/3 rule kills false alarms."],
+["Support/resistance lines may…?",["Decide your trade","Reveal where battles concentrate","Predict direction"],"Reveal where battles concentrate","Reveal = allowed. Decide = forbidden."],
+["Reading vs system?",["Reading alone prints money","Reading is raw material; the system comes next","Indicators predict"],"Reading is raw material; the system comes next","Verified: mean Sharpe −0.15 net — raw material, not machine."]];
+document.getElementById("qnext").onclick=function(){qi++;if(qi>=Q.length){document.getElementById("qq").textContent="Done! Final score: "+score+" / "+Q.length;document.getElementById("qopts").innerHTML="";document.getElementById("qexp").textContent=score>=8?"🏆 Professional reader. Publish 2–3-line readings for peer review — you now beat most interview candidates.":score>=6?"💪 Solid. Re-read Q2/Q3 markers once more.":"🌱 Good start — scroll to the Beginner guide and retake.";document.getElementById("qnext").style.display="none";document.getElementById("qbar").style.width="100%";document.getElementById("qmeta").textContent="Complete · Score "+score+" / "+Q.length;return;}renderQ();};
+renderQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+services:
+  research:
+    build: .
+    volumes:
+      - ./data:/work/data
+      - ./results:/work/results
+    environment:
+      - PYTHONPATH=/work
+      - MPLBACKEND=Agg
+    command: python scripts/run_all.py
+
+  notebook:
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./data:/work/data
+      - ./results:/work/results
+      - ./src:/work/src
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=""
