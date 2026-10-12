@@ -24,7 +24,7 @@
 | Full interactive preview (click → quiz + charts) | Backtest: reading vs MACD-alone |
 |---|---|
 | [![preview](docs/preview.png)](preview.html) | ![investigator vs macd](results/figures/investigator_vs_macd.png) |
-| `preview.html` (also hosted as `docs/index.html` on Pages) — quiz verified clickable via automated browser | `results/results.json` → net Sharpe @10bps, 1-bar lag |
+| `preview.html` (also hosted as `/preview.html` and `/docs/preview.html` on Pages — [open live](https://m0-ar.github.io/price-action-investigator/preview.html)) — quiz verified clickable via automated browser | `results/results.json` → net Sharpe @10bps, 1-bar lag |
 
 **🎬 Demo video:** watch `docs/demo.mp4` (12s, 720p, real capture) inside the [live preview](preview.html#demo) (poster: `preview-poster.png`). To (re)record it in under 2 minutes, follow [`docs/DEMO.md`](docs/DEMO.md) (automated capture or Loom/OBS, core flow first ≤15s, GIF ≤5MB).
 
@@ -85,7 +85,7 @@ You get: `results/results.json` (every table + 64-trial ledger) · `results/figu
 | Honest harness | 1-bar execution lag, cost ladder 0/5/10/20 bps, walk-forward OOS, random exposure-matched control, full metric constellation, ≥100-trade power flag | `src/backtest.py` |
 | Live data loader | Primary direct JSON feed + 2 fallbacks, Parquet cache, adjusted closes, HLCV audit + logged FX-rounding fix | `src/data_loader.py` |
 | Experiment suite E0–E7 | Audit → alone-vs-reading → regimes → momentum→fwd → reversal→adverse → zones-vs-placebo → system-vs-alone → cross-symbol consistency (≥3/4) + 64-trial ledger | `src/experiments.py` |
-| Interactive web preview | Result cards, canvas charts, 6-step beginner guide, 10-Q quiz with score/streak, demo video slot, Pages-ready single file | `preview.html` + `docs/index.html` |
+| Interactive web preview | Result cards, canvas charts, 6-step beginner guide, 10-Q quiz with score/streak, demo video slot, Pages-ready single file | `preview.html` + `docs/preview.html` + `docs/index.html` (keep all three in sync) |
 | One-command reproduce | Docker service + notebook service, 2 pytest gates, figure regeneration | `docker-compose.yml`, `Dockerfile`, `scripts/run_all.py` |
 
 ## 👥 User stories — who is this for
@@ -104,15 +104,26 @@ You get: `results/results.json` (every table + 64-trial ledger) · `results/figu
 
 Short walkthrough (12s video + GIF above): run the pipeline → open the preview → answer one quiz question → see the charts. Video: [`docs/demo.mp4`](docs/DEMO.md) (h264, 720p) embedded in the [preview's demo section](preview.html#demo). Poster: `preview-poster.png`. Recording/rebuild guide: [`docs/DEMO.md`](docs/DEMO.md).
 
-## 🌐 Live web preview (GitHub Pages)
+## 🌐 Live web preview (GitHub Pages) — click to open in your browser
 
-This repo ships its own website. `preview.html` (root, for local double-click) and `docs/index.html` (identical copy, the Pages entry file) + `.nojekyll` (disables Jekyll so pure static hosting works).
+| Open | URL | What renders |
+|---|---|---|
+| 🏠 Home | https://m0-ar.github.io/price-action-investigator/ | Redirects to the interactive preview |
+| 🔍 Preview | https://m0-ar.github.io/price-action-investigator/preview.html | Result cards, charts, beginner guide, 10-question quiz, demo video |
+| 🪞 Mirror | https://m0-ar.github.io/price-action-investigator/docs/preview.html | Identical copy (same content, same quiz) |
+
+This repo ships its own website. Publishing source is currently **root (`/`)**, so all three URLs above resolve (verified: 200/200/200). Files: `preview.html` (root, also works via local double-click) + `docs/preview.html` (identical mirror) + `docs/index.html` (Pages entry for `/docs` source) + `index.html` (root redirect) + `.nojekyll` at root (disables Jekyll so pure static hosting works). Video/poster travel with each copy (`demo.mp4`, `preview-poster.png` at root **and** under `docs/`), so the demo plays from every path.
 
 ```bash
-# Deploy from branch (2026 flow):
-# 1. Push to GitHub → 2. Settings → Pages → Source: "Deploy from a branch"
-# 3. Branch: main · Folder: /docs → 4. Save
-# 5. Open: https://<you>.github.io/price-action-investigator/
+# If you ever change Settings → Pages → Source, the mapping is:
+#   source `/`     → repo preview.html serves at /preview.html (/ + /docs/preview.html also work)
+#   source `/docs` → repo docs/preview.html serves at /preview.html (/ works via docs/index.html)
+# After changing the setting, wait 1–2 min for the "pages build and deployment"
+# Action run, then re-probe:
+BASE="https://m0-ar.github.io/price-action-investigator"
+for p in "" "preview.html" "docs/preview.html" "demo.mp4"; do
+  printf "%s -> " "/$p"; curl -s -o /dev/null -w "%{http_code}\n" "$BASE/$p"
+done
 ```
 
 ---
@@ -279,12 +290,12 @@ Ch.2: formal DSR/PBO + BY-FDR + exposure-matched bootstrap CIs on the harness. C
 **Why is the Sharpe negative?** Costs + delay + honesty. Same-bar fills and zero costs would flatter everything; we use next-bar fills and 0–20 bps ladders, so weak edges die on contact — as they should.
 **SPY has only 30 trades — is that a failure?** It is disclosed as underpowered (<100-trade rule). We report it as-is instead of tuning it away. GOLD (104) and BTC (180) carry the weight.
 **Which market worked best?** BTC (+0.29) and GOLD (+0.18) net @10bps; EURUSD (-0.66) and SPY (-0.41) did not. Mean: -0.15 vs MACD-alone -0.30. Less-bad, not rich.
-**How do I host the interactive page?** See [🌐 Live web preview](#-live-web-preview-github-pages): Settings → Pages → Deploy from a branch → main + /docs.
+**How do I open the interactive page?** Click any row in [🌐 Live web preview](#-live-web-preview-github-pages--click-to-open-in-your-browser): home `/`, `/preview.html`, `/docs/preview.html` — all three render (source is root). Locally, just double-click `preview.html`.
 **How do I cite this?** See [§13](#13-license--citation).
 
 ## 🤝 Contributing
 
-PRs welcome: keep every number reproducible (`scripts/run_all.py` must regenerate `results/`), keep signals past-only (`signal.shift(1)` — the lag test guards it), log every new trial in the ledger, and update both `preview.html` and `docs/index.html` together. Run `python -m pytest tests/ -q` and `docker compose config` before pushing.
+PRs welcome: keep every number reproducible (`scripts/run_all.py` must regenerate `results/`), keep signals past-only (`signal.shift(1)` — the lag test guards it), log every new trial in the ledger, and update all three preview copies together (`preview.html`, `docs/preview.html`, `docs/index.html` — they must stay byte-identical apart from nothing; video/poster already mirrored at root and `docs/`). Run `python -m pytest tests/ -q` and `docker compose config` before pushing.
 
 ## 13. License & citation
 
